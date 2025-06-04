@@ -1,0 +1,12 @@
+{% comment %}
+  Chatbot snippet para la tienda
+{% endcomment %}
+
+{{ 'chatbot.css' | asset_url | stylesheet_tag }}
+
+<script>
+  document.documentElement.setAttribute('data-chatbot-theme', '{{ block.settings.chatbot_theme }}');
+  document.documentElement.setAttribute('data-chatbot-position', '{{ block.settings.chatbot_position }}');
+</script>
+
+{{ 'chatbot.js' | asset_url | script_tag }} 

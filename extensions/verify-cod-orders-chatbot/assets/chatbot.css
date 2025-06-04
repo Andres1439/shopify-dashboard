@@ -1,0 +1,140 @@
+.chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.chatbot-header {
+  background: #008060;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.chatbot-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.chatbot-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #f8f9fa;
+}
+
+.chatbot-message {
+  margin-bottom: 10px;
+  max-width: 80%;
+}
+
+.chatbot-message.user {
+  margin-left: auto;
+  background: #008060;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px 15px 0 15px;
+}
+
+.chatbot-message.bot {
+  background: white;
+  padding: 10px 15px;
+  border-radius: 15px 15px 15px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chatbot-input {
+  padding: 15px;
+  background: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 10px;
+}
+
+.chatbot-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+
+.chatbot-input button {
+  background: #008060;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chatbot-input button:hover {
+  background: #006e52;
+}
+
+/* Tema oscuro */
+.chatbot-container.dark {
+  background: #1a1a1a;
+}
+
+.chatbot-container.dark .chatbot-messages {
+  background: #2d2d2d;
+}
+
+.chatbot-container.dark .chatbot-message.bot {
+  background: #3d3d3d;
+  color: white;
+}
+
+.chatbot-container.dark .chatbot-input {
+  background: #1a1a1a;
+  border-top-color: #3d3d3d;
+}
+
+.chatbot-container.dark .chatbot-input input {
+  background: #2d2d2d;
+  border-color: #3d3d3d;
+  color: white;
+}
+
+/* Posiciones */
+.chatbot-container.bottom-left {
+  right: auto;
+  left: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chatbot-container {
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  
+  .chatbot-container.bottom-left {
+    left: 0;
+  }
+} 

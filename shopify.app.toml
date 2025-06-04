@@ -3,7 +3,7 @@
 client_id = "b24ab9335f0748bf3b53d0ae152ab1da"
 name = "Verify COD Orders"
 handle = "verify-cod-orders"
-application_url = "https://berkeley-suppose-respiratory-crew.trycloudflare.com"
+application_url = "https://non-vol-herb-growing.trycloudflare.com"
 embedded = true
 
 [build]
@@ -23,13 +23,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products,write_themes"
 
 [auth]
 redirect_urls = [
-  "https://berkeley-suppose-respiratory-crew.trycloudflare.com/auth/callback",
-  "https://berkeley-suppose-respiratory-crew.trycloudflare.com/auth/shopify/callback",
-  "https://berkeley-suppose-respiratory-crew.trycloudflare.com/api/auth/callback"
+  "https://non-vol-herb-growing.trycloudflare.com/auth/callback",
+  "https://non-vol-herb-growing.trycloudflare.com/auth/shopify/callback",
+  "https://non-vol-herb-growing.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
