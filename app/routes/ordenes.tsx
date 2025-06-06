@@ -1,7 +1,19 @@
-import { useState } from "react";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { getOrders } from "../services/orders.server";
+
+export const loader = async ({ request }) => {
+  try {
+    const orders = await getOrders(request);
+    return json({ orders });
+  } catch (error) {
+    console.error("Error obteniendo órdenes:", error);
+    return json({ orders: [] });
+  }
+};
 
 export default function Ordenes() {
-  const [ordenes] = useState([]); // Aquí se conectaría con la API de Shopify
+  const { orders } = useLoaderData();
 
   return (
     <div className="ordenes-container">
@@ -25,13 +37,20 @@ export default function Ordenes() {
         </div>
       </header>
 
-      {ordenes.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="sin-datos">
           <p>Sin órdenes disponibles</p>
         </div>
       ) : (
         <div className="ordenes-grid">
-          {/* Aquí irían las órdenes */}
+          {orders.map(order => (
+            <div key={order.id} className="orden-card">
+              <h4>{order.name}</h4>
+              <p>Estado: {order.displayFinancialStatus}</p>
+              <p>Fecha: {new Date(order.createdAt).toLocaleDateString()}</p>
+              <p>Total: {order.totalPriceSet.shopMoney.amount} {order.totalPriceSet.shopMoney.currencyCode}</p>
+            </div>
+          ))}
         </div>
       )}
 

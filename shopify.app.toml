@@ -3,7 +3,7 @@
 client_id = "b24ab9335f0748bf3b53d0ae152ab1da"
 name = "Verify COD Orders"
 handle = "verify-cod-orders"
-application_url = "https://oasis-fisheries-opinions-montana.trycloudflare.com"
+application_url = "https://subsidiary-retired-appreciated-bra.trycloudflare.com"
 embedded = true
 
 [build]
@@ -23,13 +23,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_themes"
+scopes = "read_privacy_settings,read_orders,write_products,write_themes,read_products,read_themes,read_customers,read_gift_cards,read_payment_terms,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://oasis-fisheries-opinions-montana.trycloudflare.com/auth/callback",
-  "https://oasis-fisheries-opinions-montana.trycloudflare.com/auth/shopify/callback",
-  "https://oasis-fisheries-opinions-montana.trycloudflare.com/api/auth/callback"
+  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/auth/callback",
+  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/auth/shopify/callback",
+  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
