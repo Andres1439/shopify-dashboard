@@ -3,7 +3,7 @@
 client_id = "b24ab9335f0748bf3b53d0ae152ab1da"
 name = "Verify COD Orders"
 handle = "verify-cod-orders"
-application_url = "https://intimate-integration-nobody-revised.trycloudflare.com"
+application_url = "https://oasis-fisheries-opinions-montana.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "write_products,write_themes"
 
 [auth]
 redirect_urls = [
-  "https://intimate-integration-nobody-revised.trycloudflare.com/auth/callback",
-  "https://intimate-integration-nobody-revised.trycloudflare.com/auth/shopify/callback",
-  "https://intimate-integration-nobody-revised.trycloudflare.com/api/auth/callback"
+  "https://oasis-fisheries-opinions-montana.trycloudflare.com/auth/callback",
+  "https://oasis-fisheries-opinions-montana.trycloudflare.com/auth/shopify/callback",
+  "https://oasis-fisheries-opinions-montana.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
