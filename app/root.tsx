@@ -5,7 +5,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { Sidebar } from "./components/Sidebar";
 
 export default function App() {
   return (
@@ -27,7 +26,6 @@ export default function App() {
       </head>
       <body>
         <div className="app-container">
-          <Sidebar />
           <main className="main-content">
             <Outlet />
           </main>
@@ -46,21 +44,7 @@ export default function App() {
 
           .main-content {
             flex: 1;
-            margin-left: 220px;
             padding: 2rem;
-            transition: margin-left 0.3s ease;
-          }
-
-          @media (max-width: 1200px) {
-            .main-content {
-              margin-left: 50px;
-            }
-          }
-
-          @media (max-width: 768px) {
-            .main-content {
-              margin-left: 50px;
-            }
           }
         `}</style>
         <ScrollRestoration />

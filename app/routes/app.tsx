@@ -8,6 +8,7 @@ import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { SubscriptionPlan, SubscriptionStatus } from '@prisma/client';
 
 const SHOP_DATA_QUERY = `
   query {
@@ -26,22 +27,23 @@ const SHOP_DATA_QUERY = `
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
+// Cache para los datos de la tienda
+const shopCache = new Map();
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log("--- app/routes/app.tsx loader started ---");
-
   const { admin, session } = await authenticate.admin(request);
+  const shopDomain = session.shop;
 
-  console.log("Shopify authentication successful in app.tsx loader.");
+  // Verificar si los datos están en caché y son recientes (menos de 5 minutos)
+  const cachedData = shopCache.get(shopDomain);
+  if (cachedData && Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
+    return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
+  }
 
   try {
     const shopDataResponse = await admin.graphql(SHOP_DATA_QUERY);
     const shopData = await shopDataResponse.json();
-
-    console.log("Shop data from Shopify API (in app.tsx loader):");
-    // console.log(JSON.stringify(shopData, null, 2)); // Descomentar para ver la data completa
-
     const shop = shopData.data.shop;
-    const shopDomain = shop.myshopifyDomain;
     const accessToken = session.accessToken;
 
     const dataForUpsert = {
@@ -58,28 +60,26 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         shop_domain: shopDomain,
         shop_name: shop.name,
         access_token: accessToken,
-        subscription_plan: "FREE",
-        subscription_status: "TRIALING",
-        webhook_endpoints: {}, 
+        subscription_plan: SubscriptionPlan.FREE,
+        subscription_status: SubscriptionStatus.TRIALING,
+        webhook_endpoints: {},
         timezone: shop.timezone,
         currency: shop.currencyCode,
         last_active_at: new Date(),
       },
     };
 
-    // console.log("Data prepared for prisma.shops.upsert (in app.tsx loader):");
-    // console.log(JSON.stringify(dataForUpsert, null, 2)); // Descomentar para ver la data completa
+    await prisma.shops.upsert(dataForUpsert);
 
-    const result = await prisma.shops.upsert(dataForUpsert);
-    console.log("prisma.shops.upsert result (in app.tsx loader):");
-    // console.log(result); // Descomentar para ver el resultado completo
-    console.log("Shop data saved successfully (in app.tsx loader).");
+    // Guardar en caché
+    shopCache.set(shopDomain, {
+      data: shop,
+      timestamp: Date.now()
+    });
 
   } catch (error) {
-    console.error("Error saving shop data (in app.tsx loader):", error);
+    console.error("Error saving shop data:", error);
   }
-
-  console.log("--- app/routes/app.tsx loader finished ---");
 
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
@@ -93,7 +93,10 @@ export default function App() {
         <Link to="/app" rel="home">
           Home
         </Link>
-        <Link to="/app/additional">Additional page</Link>
+        <Link to="/app/productos">Productos</Link>
+        <Link to="/app/ordenes">Órdenes</Link>
+        <Link to="/app/chatbot">Chatbot</Link>
+        <Link to="/app/pricing">Pricing</Link>
       </NavMenu>
       <Outlet />
     </AppProvider>

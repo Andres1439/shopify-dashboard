@@ -3,7 +3,7 @@
 client_id = "b24ab9335f0748bf3b53d0ae152ab1da"
 name = "Verify COD Orders"
 handle = "verify-cod-orders"
-application_url = "https://subsidiary-retired-appreciated-bra.trycloudflare.com"
+application_url = "https://spy-mountains-sheriff-handles.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "read_privacy_settings,read_orders,write_products,write_themes,read_pro
 
 [auth]
 redirect_urls = [
-  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/auth/callback",
-  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/auth/shopify/callback",
-  "https://subsidiary-retired-appreciated-bra.trycloudflare.com/api/auth/callback"
+  "https://spy-mountains-sheriff-handles.trycloudflare.com/auth/callback",
+  "https://spy-mountains-sheriff-handles.trycloudflare.com/auth/shopify/callback",
+  "https://spy-mountains-sheriff-handles.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

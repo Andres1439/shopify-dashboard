@@ -83,6 +83,10 @@ model shops {
   user_sessions          user_sessions[]
   webhooks_log           webhooks_log[]
 
+  // Relaciones inversas con Orders y Products
+  orders                 orders[]
+  products               products[]
+
   @@index([shop_domain])
 }
 
@@ -241,4 +245,30 @@ model Session {
   emailVerified Boolean? @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model orders {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id       String   @unique // Asumiendo que es un ID único de Shopify
+  shopId         String   @db.Uuid // Campo para la relación con shops
+  order_number   String?
+  customer_email String?
+  total_price    Decimal  @db.Decimal(10, 2)
+  status         String? // Considera usar un Enum si los estados son fijos
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  shop           shops    @relation(fields: [shopId], references: [id]) // Definición de la relación
+}
+
+model products {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product_id  String   @unique // Asumiendo que es un ID único de Shopify
+  shopId      String   @db.Uuid // Campo para la relación con shops
+  title       String
+  vendor      String?
+  price       Decimal  @db.Decimal(10, 2)
+  status      String? // Considera usar un Enum si los estados son fijos
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  shop        shops    @relation(fields: [shopId], references: [id]) // Definición de la relación
 }
