@@ -10,13 +10,18 @@ import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { SubscriptionPlan, SubscriptionStatus } from '@prisma/client';
 
+interface GraphQLResponse<T> {
+  data?: T;
+  errors?: Array<{ message: string }>;
+}
+
 const SHOP_DATA_QUERY = `
   query {
     shop {
       id
       name
       myshopifyDomain
-      timezone
+      ianaTimezone
       currencyCode
       plan {
         displayName
@@ -37,13 +42,26 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // Verificar si los datos están en caché y son recientes (menos de 5 minutos)
   const cachedData = shopCache.get(shopDomain);
   if (cachedData && Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
-    return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
+    return json({ 
+      apiKey: process.env.SHOPIFY_API_KEY || "",
+      shop: cachedData.data 
+    });
   }
 
   try {
     const shopDataResponse = await admin.graphql(SHOP_DATA_QUERY);
-    const shopData = await shopDataResponse.json();
-    const shop = shopData.data.shop;
+    const shopData = await shopDataResponse.json() as GraphQLResponse<{ shop: any }>;
+    
+    if (shopData.errors) {
+      console.error("GraphQL Errors:", shopData.errors);
+      throw new Error("Failed to fetch shop data");
+    }
+    
+    const shop = shopData.data?.shop;
+    if (!shop) {
+      throw new Error("No shop data returned");
+    }
+
     const accessToken = session.accessToken;
 
     const dataForUpsert = {
@@ -51,7 +69,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       update: {
         shop_name: shop.name,
         access_token: accessToken,
-        timezone: shop.timezone,
+        timezone: shop.ianaTimezone,
         currency: shop.currencyCode,
         updated_at: new Date(),
         last_active_at: new Date(),
@@ -63,7 +81,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         subscription_plan: SubscriptionPlan.FREE,
         subscription_status: SubscriptionStatus.TRIALING,
         webhook_endpoints: {},
-        timezone: shop.timezone,
+        timezone: shop.ianaTimezone,
         currency: shop.currencyCode,
         last_active_at: new Date(),
       },
@@ -72,20 +90,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     await prisma.shops.upsert(dataForUpsert);
 
     // Guardar en caché
-    shopCache.set(shopDomain, {
+    const cacheData = {
       data: shop,
       timestamp: Date.now()
+    };
+    shopCache.set(shopDomain, cacheData);
+
+    return json({ 
+      apiKey: process.env.SHOPIFY_API_KEY || "",
+      shop: shop 
     });
 
   } catch (error) {
     console.error("Error saving shop data:", error);
+    // Retorna datos básicos incluso si hay error
+    return json({ 
+      apiKey: process.env.SHOPIFY_API_KEY || "",
+      shop: null 
+    });
   }
-
-  return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
 
 export default function App() {
-  const { apiKey } = useLoaderData<typeof loader>();
+  const { apiKey, shop } = useLoaderData<typeof loader>();
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
@@ -98,7 +125,7 @@ export default function App() {
         <Link to="/app/chatbot">Chatbot</Link>
         <Link to="/app/pricing">Pricing</Link>
       </NavMenu>
-      <Outlet />
+      <Outlet context={{ shop }} />
     </AppProvider>
   );
 }
